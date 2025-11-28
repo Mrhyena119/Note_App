@@ -10,6 +10,7 @@ body {
 }
 
 .app-container {
+  padding: 20px;
   border-radius: 15px;
   text-align: center;
   width: 90%;
@@ -147,5 +148,4 @@ footer {
   background-color: #121212;
   color: #ffffff;
   font-size: 14px;
-
 }
