@@ -58,7 +58,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const deleteIcon = document.createElement('div');
     deleteIcon.classList.add('delete-icon');
-    deleteIcon.innerHTML = '❌';
     deleteIcon.addEventListener('click', () => {
       noteElement.remove();
       saveNotes();
