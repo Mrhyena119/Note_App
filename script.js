@@ -10,12 +10,21 @@ document.addEventListener('DOMContentLoaded', () => {
     notes.forEach(noteText => {
       const noteElement = document.createElement('div');
       noteElement.classList.add('note');
-      noteElement.textContent = noteText;
+      noteElement.innerHTML = noteText.replace(/\n/g, '<br>'); // Convert newlines to <br> for display
 
-      noteElement.addEventListener('click', () => {
+      const deleteIcon = document.createElement('div');
+      deleteIcon.classList.add('delete-icon');
+      deleteIcon.addEventListener('click', () => {
         noteElement.remove();
         saveNotes();
         updateNotesList();
+      });
+
+      noteElement.appendChild(deleteIcon);
+
+      noteElement.addEventListener('click', () => {
+        noteElement.classList.toggle('completed');
+        saveNotes();
       });
 
       notesContainer.appendChild(noteElement);
@@ -24,12 +33,16 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   function saveNotes() {
-    const notes = Array.from(notesContainer.children).map(note => note.textContent);
+    const notes = Array.from(notesContainer.children).map(note => note.innerHTML.replace(/<div[^>]*>.*<\/div>/, '').trim());
     localStorage.setItem('notes', JSON.stringify(notes));
   }
 
   function updateNotesList() {
-    clearNotesButton.style.display = notesContainer.children.length > 0 ? 'block' : 'none';
+    if (notesContainer.children.length > 0) {
+      clearNotesButton.style.display = 'block';
+    } else {
+      clearNotesButton.style.display = 'none';
+    }
   }
 
   addNoteButton.addEventListener('click', () => {
@@ -41,12 +54,22 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const noteElement = document.createElement('div');
     noteElement.classList.add('note');
-    noteElement.textContent = noteText;
+    noteElement.innerHTML = noteText.replace(/\n/g, '<br>'); // Convert newlines to <br> for display
 
-    noteElement.addEventListener('click', () => {
+    const deleteIcon = document.createElement('div');
+    deleteIcon.classList.add('delete-icon');
+    deleteIcon.innerHTML = '❌';
+    deleteIcon.addEventListener('click', () => {
       noteElement.remove();
       saveNotes();
       updateNotesList();
+    });
+
+    noteElement.appendChild(deleteIcon);
+
+    noteElement.addEventListener('click', () => {
+      noteElement.classList.toggle('completed');
+      saveNotes();
     });
 
     notesContainer.appendChild(noteElement);
@@ -55,12 +78,18 @@ document.addEventListener('DOMContentLoaded', () => {
     updateNotesList();
   });
 
-  clearNotesButton.addEventListener('click', () => {
-    if (confirm('Are you sure you want to clear all notes?')) {
-      notesContainer.innerHTML = '';
-      saveNotes();
-      updateNotesList();
+  // Listen for Enter key press
+  noteInput.addEventListener('keypress', (event) => {
+    if (event.key === 'Enter') {
+      event.preventDefault(); // Prevent form from submitting
+      addNoteButton.click(); // Trigger the add note button click
     }
+  });
+
+  clearNotesButton.addEventListener('click', () => {
+    notesContainer.innerHTML = '';
+    saveNotes();
+    updateNotesList();
   });
 
   loadNotes();
